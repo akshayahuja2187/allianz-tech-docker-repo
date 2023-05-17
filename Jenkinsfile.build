@@ -22,8 +22,8 @@ pipeline {
           )
         ]) {
           sh 'docker login -u $USERNAME -p $PASSWORD'
-          sh 'docker tag my-image docker.io/akshayahuja2187/snapshots/my-image:latest'
-          sh 'docker push docker.io/akshayahuja2187/snapshots/my-image:latest'
+          sh 'docker tag my-image docker.io/akshayahuja2187/snapshots:latest'
+          sh 'docker push docker.io/akshayahuja2187/snapshots:latest'
         }
       }
     }
@@ -40,8 +40,8 @@ pipeline {
           )
         ]) {
           sh 'docker login -u $USERNAME -p $PASSWORD'
-          sh 'docker tag my-image docker.io/akshayahuja2187/releases/my-image:release'
-          sh 'docker push docker.io/akshayahuja2187/releases/my-image:release'
+          sh 'docker tag my-image docker.io/akshayahuja2187/releases:release'
+          sh 'docker push docker.io/akshayahuja2187/releases:release'
         }
       }
     }
