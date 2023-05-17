@@ -22,7 +22,7 @@ pipeline {
           )
         ]) {
           sh 'docker login -u $USERNAME -p $PASSWORD'
-          sh 'docker push my-image:latest'
+          sh 'docker push akshayahuja2187/snapshots/my-image:latest'
         }
       }
     }
@@ -39,7 +39,7 @@ pipeline {
           )
         ]) {
           sh 'docker login -u $USERNAME -p $PASSWORD'
-          sh 'docker push my-image:release'
+          sh 'docker push akshayahuja2187/releases/my-image:release'
         }
       }
     }
