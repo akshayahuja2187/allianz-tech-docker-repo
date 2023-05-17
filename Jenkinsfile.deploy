@@ -1,0 +1,47 @@
+pipeline {
+  agent any
+  stages {
+    stage('Build') {
+      steps {
+        sh 'docker build -t my-image .'
+      }
+    }
+    stage('Push') {
+      when {
+        branch 'main'
+      }
+      steps {
+        withCredentials([
+          usernamePassword(
+            credentialsId: 'docker-hub-release-credentials',
+            usernameVariable: 'USERNAME',
+            passwordVariable: 'PASSWORD'
+          )
+        ]) {
+          sh 'docker login -u $USERNAME -p $PASSWORD'
+          sh 'docker push my-image:release'
+        }
+      }
+    }
+    stage('Deploy') {
+      when {
+        branch 'main'
+      }
+      steps {
+        withCredentials([
+          azureCredentials(
+            credentialsId: 'aks-credentials',
+            subscriptionIdVariable: 'SUBSCRIPTION_ID',
+            resourceGroupVariable: 'RESOURCE_GROUP',
+            clusterNameVariable: 'CLUSTER_NAME'
+          )
+        ]) {
+          sh 'kubectl apply -f deployment.yaml'
+        }
+      }
+    }
+  }
+  triggers {
+    upstream(upstreamJob: 'my-build-job', triggerOnChanges: true)
+  }
+}
