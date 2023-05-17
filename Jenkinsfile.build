@@ -9,7 +9,7 @@ pipeline {
         sh 'docker build -t my-image .'
       }
     }
-    stage('Push') {
+    stage('Push to snapshot') {
       when {
         not { branch 'main' }
       }
