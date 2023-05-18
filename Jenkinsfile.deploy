@@ -6,6 +6,7 @@ pipeline {
         script{ sh '''
                       k3d cluster create my-cluster --wait   
                       echo "Waiting for kubernetes cluster to be initialized and running"
+                      sleep 10
                       kubectl wait pod --all --for=condition=Ready --namespace=kube-system
                       kubectl get pods --namespace kube-system
                    '''   
