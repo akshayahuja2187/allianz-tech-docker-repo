@@ -22,7 +22,7 @@ pipeline {
               kubectl apply -f nodeport.yaml --namespace test-app
               kubectl wait pod --all --for=condition=Ready --namespace=test-app --timeout=60s
               kube_ip=$(kubectl get nodes k3d-my-cluster-server-0 -o jsonpath='{.status.addresses[0].address}')
-              /home/akjenkinsadmin/.local/bin/pytest app/app_test/test.py --ip=${kube_ip}
+              python -m pytest app/app_test/test.py --ip=${kube_ip}
               kubectl delete namespace test-app
            '''
       }
