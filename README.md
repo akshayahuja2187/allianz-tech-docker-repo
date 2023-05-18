@@ -36,3 +36,28 @@ To achieve the requirements, you should follow this procedure:
 You must:
 1. Provide the **source code** you used.
 2. **Show us** how the CI/CD works with a real example.
+
+
+Repos Created:
+
+1. Terraform Repo: https://github.com/akshayahuja2187/allianz-tech-terraform
+This contains terraform code to create resource group, vnet, subnet, NIC, Public IP, NSG, VM to host jenkins instance alongwith terraform state being maintained in azure storage account.
+Also contains the terraform.yaml workflow using Github actions to run a pipeline to do az login, terraform init, terraform validate & terraform apply. More details on the repo's Readme.md file.
+
+2. Jenkins instance has been created is accessible here http://20.xxx.x.xx:8080/ 
+with guest user: Login ID: guest PWD: guest_user
+
+I will be keeping the VM in Stopped(Deallocated State) as it's costly to keep it running on my personal subscription, Please share me a timeframe over email and I can turn it on for your review.
+
+3. Dockerhub repos: https://hub.docker.com/repository/docker/akshayahuja2187/snapshots
+https://hub.docker.com/repository/docker/akshayahuja2187/releases
+
+4. App repo : https://github.com/akshayahuja2187/allianz-tech-docker-repo
+
+This required some basic troubleshooting with the dockerfile and the nginx.conf
+Build and deployment pipelines: Jenkinsfile.build & Jenkinsfile.deploy
+
+- There are much more enhancements and improvements possible using various ways such as creating custom and repeatable groovy functions and adding them to the jenkins library which can be sourced in other Jenkinsfiles as well.
+
+- The current pipelines are still rudimentary due to time-shortage (alongwith fulltime work), yet I have tried to cover the basic deliverables. Given some more time, these can be made much better. The triggering mechanism needs rework to better refine it.
+
