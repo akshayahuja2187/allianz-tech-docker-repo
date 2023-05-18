@@ -6,8 +6,7 @@ pipeline {
         script{ sh '''
                       k3d cluster create my-cluster --wait   
                       echo "Waiting for kubernetes cluster to be initialized and running"
-                      sleep 10
-                      kubectl wait pod --all --for=condition=Ready --namespace=kube-system
+                      kubectl wait pod --all --for=condition=Ready --namespace=kube-system  --timeout=60s
                       kubectl get pods --namespace kube-system
                    '''   
               }
@@ -21,7 +20,7 @@ pipeline {
               kubectl create namespace test-app
               kubectl apply -f deployment.yaml --namespace test-app
               kubectl apply -f nodeport.yaml --namespace test-app
-              kubectl wait pod --all --for=condition=Ready --namespace=test-app
+              kubectl wait pod --all --for=condition=Ready --namespace=test-app --timeout=60s
               kube_ip = kubectl get nodes k3d-my-cluster-server-0 -o jsonpath='{.status.addresses[0].address}
               pytest app/app_test/test.py --ip=${kube_ip}
               kubectl delete namespace test-app
