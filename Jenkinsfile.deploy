@@ -18,9 +18,6 @@ pipeline {
     }
   }
   triggers {
-    upstream {
-      upstreamJob 'my-build-job'
-      triggerOnChanges true
-    }
+  upstream(upstreamProjects: "some_project/some_branch", threshold: hudson.model.Result.SUCCESS)
   }
 }
