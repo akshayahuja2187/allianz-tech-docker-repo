@@ -23,9 +23,11 @@ pipeline {
     }
 
     stage('Deploy My-Image') {
-      sh 'kubectl apply -f deployment.yaml'
+      steps {
+        sh 'kubectl apply -f deployment.yaml'
+      }
     }
-    
+
     stage('Delete cluster') {
       steps {
         sh 'k3d cluster delete my-cluster'
