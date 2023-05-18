@@ -21,3 +21,4 @@ def test_get_request(kube_ip):
 
   # Verify the body.
   assert b'Everything looks good at this point.' in response.content
+  assert b'Hi This is Akshay's nginx website' in response.content
