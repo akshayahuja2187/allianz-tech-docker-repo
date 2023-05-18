@@ -29,16 +29,12 @@ pipeline {
     }
   }
   triggers {
-  upstream(upstreamProjects: "some_project/some_branch", threshold: hudson.model.Result.SUCCESS)
+  upstream(upstreamProjects: "my-build-job/main", threshold: hudson.model.Result.SUCCESS)
   }
 
   post { 
     always {
-      stage('Delete cluster') {
-        steps {
-          sh 'k3d cluster delete my-cluster'
+       sh 'k3d cluster delete my-cluster'
         }
       }
-    }
-  }
 }
