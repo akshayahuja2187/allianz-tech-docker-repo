@@ -27,14 +27,16 @@ pipeline {
         sh 'kubectl apply -f deployment.yaml'
       }
     }
+  }
+  triggers {
+  upstream(upstreamProjects: "some_project/some_branch", threshold: hudson.model.Result.SUCCESS)
+  }
 
+  always {
     stage('Delete cluster') {
       steps {
         sh 'k3d cluster delete my-cluster'
       }
     }
-  }
-  triggers {
-  upstream(upstreamProjects: "some_project/some_branch", threshold: hudson.model.Result.SUCCESS)
   }
 }
