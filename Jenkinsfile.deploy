@@ -1,24 +1,41 @@
 pipeline {
   agent any
   stages {
-    stage('Start k3d cluster') {
-      steps {
-        sh 'k3d cluster create my-cluster --wait'
-      }
-    }
-    stage('Initialize Cluster') {
+    stage('Initialize test cluster') {
       steps {
         script{ sh '''
-                      sleep 60
+                      k3d cluster create my-cluster --wait   
+                      print "Waiting for kubernetes cluster to be initialized and running"
+                      kubectl wait pod --all --for=condition=Ready --namespace=kube-system
                       kubectl get pods --namespace kube-system
                    '''   
               }
       }
     }
 
-    stage('Deploy My-Image') {
+    stage('Testing App Prior to Final Deployment') {
       steps {
-        sh 'kubectl apply -f deployment.yaml'
+        sh '''
+              print "Running validation test before release"
+              kubectl create namespace test-app
+              kubectl apply -f deployment.yaml --namespace test-app
+              kubectl apply -f nodeport.yaml --namespace test-app
+              kubectl wait pod --all --for=condition=Ready --namespace=test-app
+              kube_ip = kubectl get nodes k3d-my-cluster-server-0 -o jsonpath='{.status.addresses[0].address}
+              pytest app/app_test/test.py --ip=${kube_ip}
+              kubectl delete namespace test-app
+           '''
+      }
+    }
+
+    stage("Final Deployment") {
+      steps{
+        sh '''
+              kubectl create namespace release-app || true
+              kubectl apply -f deployment.yaml --namespace release-app
+              kubectl wait pod --all --for=condition=Ready --namespace=release-app
+              print "App has been Deployed to Release"
+           '''
       }
     }
   }
