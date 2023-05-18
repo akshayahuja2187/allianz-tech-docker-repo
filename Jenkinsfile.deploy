@@ -9,13 +9,7 @@ pipeline {
     stage('Initialize Cluster') {
       steps {
         script{ sh '''
-                      while true; do
-                        pod_status=$(kubectl get pods --namespace kube-system -o jsonpath="{.status.phase}")
-                        if [[ "$pod_status" == "Running" ]]; then
-                          break
-                        fi
-                        sleep 1
-                      done
+                      sleep 60
                       kubectl get pods --namespace kube-system
                    '''   
               }
