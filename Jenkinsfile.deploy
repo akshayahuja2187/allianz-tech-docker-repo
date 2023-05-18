@@ -5,7 +5,7 @@ pipeline {
       steps {
         script{ sh '''
                       k3d cluster create my-cluster --wait   
-                      print "Waiting for kubernetes cluster to be initialized and running"
+                      echo "Waiting for kubernetes cluster to be initialized and running"
                       kubectl wait pod --all --for=condition=Ready --namespace=kube-system
                       kubectl get pods --namespace kube-system
                    '''   
@@ -16,7 +16,7 @@ pipeline {
     stage('Testing App Prior to Final Deployment') {
       steps {
         sh '''
-              print "Running validation test before release"
+              echo "Running validation test before release"
               kubectl create namespace test-app
               kubectl apply -f deployment.yaml --namespace test-app
               kubectl apply -f nodeport.yaml --namespace test-app
@@ -34,7 +34,7 @@ pipeline {
               kubectl create namespace release-app || true
               kubectl apply -f deployment.yaml --namespace release-app
               kubectl wait pod --all --for=condition=Ready --namespace=release-app
-              print "App has been Deployed to Release"
+              echo "App has been Deployed to Release"
            '''
       }
     }
