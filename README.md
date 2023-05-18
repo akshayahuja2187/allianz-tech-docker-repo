@@ -61,3 +61,5 @@ Build and deployment pipelines: Jenkinsfile.build & Jenkinsfile.deploy
 
 - The current pipelines are still rudimentary due to time-shortage (alongwith fulltime work), yet I have tried to cover the basic deliverables. Given some more time, these can be made much better. The triggering mechanism needs rework to better refine it.
 
+- Adding one more comment to showcase the PR open status
+
