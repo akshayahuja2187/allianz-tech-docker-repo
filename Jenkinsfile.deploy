@@ -6,11 +6,26 @@ pipeline {
         sh 'k3d cluster create my-cluster --wait'
       }
     }
-    stage('Deploy image') {
+    stage('Initialize Cluster') {
       steps {
-        sh 'kubectl apply -f deployment.yaml'
+        script{ sh '''
+                      while true; do
+                        pod_status=$(kubectl get pods --namespace kube-system -o jsonpath="{.status.phase}")
+                        if [[ "$pod_status" == "Running" ]]; then
+                          break
+                        fi
+                        sleep 1
+                      done
+                      kubectl get pods --namespace kube-system
+                   '''   
+              }
       }
     }
+
+    stage('Deploy My-Image') {
+      sh 'kubectl apply -f deployment.yaml'
+    }
+    
     stage('Delete cluster') {
       steps {
         sh 'k3d cluster delete my-cluster'
