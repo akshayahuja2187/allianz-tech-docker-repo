@@ -1,9 +1,10 @@
 pipeline {
   agent any
   stages {
-    stage('Initialize test cluster') {
+    stage('Initialize cluster') {
       steps {
         script{ sh '''
+                      python3 -m pip install pytest
                       k3d cluster create my-cluster --wait   
                       echo "Waiting for kubernetes cluster to be initialized and running"
                       sleep 60
