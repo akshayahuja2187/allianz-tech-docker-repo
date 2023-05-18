@@ -1,47 +1,26 @@
 pipeline {
   agent any
   stages {
-    stage('Build') {
+    stage('Start k3d cluster') {
       steps {
-        sh 'docker build -t my-image .'
+        sh 'k3d cluster create my-cluster --wait'
       }
     }
-    stage('Push') {
-      when {
-        branch 'main'
-      }
+    stage('Deploy image') {
       steps {
-        withCredentials([
-          usernamePassword(
-            credentialsId: 'docker-hub-release-credentials',
-            usernameVariable: 'USERNAME',
-            passwordVariable: 'PASSWORD'
-          )
-        ]) {
-          sh 'docker login -u $USERNAME -p $PASSWORD'
-          sh 'docker push my-image:release'
-        }
+        sh 'kubectl apply -f deployment.yaml'
       }
     }
-    stage('Deploy') {
-      when {
-        branch 'main'
-      }
+    stage('Delete cluster') {
       steps {
-        withCredentials([
-          azureCredentials(
-            credentialsId: 'aks-credentials',
-            subscriptionIdVariable: 'SUBSCRIPTION_ID',
-            resourceGroupVariable: 'RESOURCE_GROUP',
-            clusterNameVariable: 'CLUSTER_NAME'
-          )
-        ]) {
-          sh 'kubectl apply -f deployment.yaml'
-        }
+        sh 'k3d cluster delete my-cluster'
       }
     }
   }
   triggers {
-    upstream(upstreamJob: 'my-build-job', triggerOnChanges: true)
+    upstream {
+      upstreamJob 'my-build-job'
+      triggerOnChanges true
+    }
   }
 }
